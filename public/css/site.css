@@ -1,0 +1,18 @@
+body{
+   
+    background-color: black;
+    color: white;
+    font-family:Arial, Helvetica, sans-serif;
+    background-image: url("Ocean.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+
+}
+table{
+    background-color: black;
+}
+a{
+    color: white;
+}
