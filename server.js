@@ -1,12 +1,12 @@
 /*********************************************************************************
-* BTI325 – Assignment 5
+* BTI325 – Assignment 6
 * I declare that this assignment is my own work in accordance with Seneca Academic Policy.
 * No part of this assignment has been copied manually or electronically from any other source
 * (including web sites) or distributed to other students.
 *
 * Name: Tanvir Singh  Student ID: 104642210  Date: 2022-11-12
 *
-* Online (Heroku) URL:https://damp-beach-98200.herokuapp.com/
+* Online (Cyclic) URL:https://easy-teal-chipmunk-tutu.cyclic.app/
 * _______________________________________________________
 *
 ********************************************************************************/
@@ -14,10 +14,30 @@ const express = require("express"); // Include express.js module
 const app = express();
 const exphbs = require("express-handlebars");
 var data = require('./data-service.js')
+const dataServiceAuth = require("./data-service-auth.js");
 const multer = require("multer");
 var fs = require('fs');
 var path = require("path"); // include moduel path to use __dirname, and function path.join()
 const { stringify } = require("querystring");
+var clientSessions = require("client-sessions");
+app.use(clientSessions({
+    cookieName: "session", // this is the object name that will be added to 'req'
+    secret: "Assignment6_", // this should be a long un-guessable string.
+    duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+    activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+  }));
+  app.use(function(req, res, next) {
+    res.locals.session = req.session;
+    next();
+   });
+   function ensureLogin(req, res, next) {
+    if (!req.session.user) {
+      res.redirect("/login");
+    } else {
+      next();
+    }
+  }
+
 //var data = require('data-service.js');
 
 
@@ -198,6 +218,21 @@ app.get('/department/:value', function (req, res) {
         res.status(404).send("Department Not Found");
     })
 })
+app.get('/Managers', function (req, res) {
+
+    data.getManagers().then(function (msg) {
+        if(msg.length> 0)
+        {
+            res.render("employees", { employees: msg })
+        }
+        else{
+            res.render("employees",{employees: "no results found"})
+        }
+     
+    }).catch(function (message) {
+        res.status(404).send("manager Not Found");
+    })
+})
 
 app.post("/images/add", upload.single("imageFile"), function (req, res) {
     res.redirect("/images");
@@ -263,12 +298,62 @@ app.get("/employees/delete/:value",(req, res) => {
     res.status(500).send("Unable to Remove Employee / Employee not found")
  })
 })
-data.initialize().then(function () {
-    app.listen(HTTP, function () {
+app.get("/login",(req,res)=>{
+   
+    res.render("login");
+})
+app.get("/register",(req,res)=>{
+    res.render("register");
+})
+app.post("/login",(req,res)=>{
+    req.body.userAgent = req.get('User-Agent');
+    dataServiceAuth.checkUser(req.body).then((user) => {
+        req.session.user = {
+        userName: user.userName, // complete it with authenticated user's userName
+        email: user.email ,// complete it with authenticated user's email
+        loginHistory: user.loginHistory// complete it with authenticated user's loginHistory
+        }
+        res.redirect('/employees');
+       }).catch(function(err){
+        res.render("login", {errorMessage : err, userName : req.body.userName});
+       })
+       
+})
+app.get("/logout",(req,res)=>{
+    req.session.reset();
+    res.redirect("/");
+})
+app.get("/userHistory",ensureLogin,(req,res)=>{
+    res.render("userHistory");
+})
 
-        console.log("Express http server listening on: " + HTTP);
+app.post("/register",(req,res)=>{
+    dataServiceAuth.registerUser(req.body).then(function(){
+        
+
+        res.render("register", {successMessage : "User Created"});
+
+     }).catch(function(err){
+
+           res.render("register", {errorMessage : err, userName : req.body.userName})
+
+     });
+})
+data.initialize().then(function () {
+    dataServiceAuth.initialize().then(function(){
+
+        app.listen(HTTP, function () {
+
+            console.log("Express http server listening on: " + HTTP);
+        });
+    
+      }).catch(function(err){
+    
+        console.log("Unable to start server : " + err);
+    
+      
     });
-}).catch(function (err) {
-    console.log("Error: " + err);
+ }).catch(function (err) {
+     console.log("Error: " + err);
 })
 

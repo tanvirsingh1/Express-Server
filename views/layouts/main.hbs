@@ -29,13 +29,36 @@
              {{#navLink "/"}}Home{{/navLink}}
              {{#navLink "/about"}}About{{/navLink}}
    
-          
           </ul>
+         
+           {{#if session.user}}
+          <form class="navbar-form navbar-right">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="userMenu" data-toggle="dropdown">
+                <span class="glyphicon glyphiconuser"></span>&nbsp;&nbsp;{{session.user.userName}}&nbsp;&nbsp;<span
+                  class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="userMenu">
+                <li><a href="/userHistory">User History</a></li>
+                <li><a href="/logout">Log Out</a></li>
+              </ul>
+            </div>
+          </form>
           <ul class="nav navbar-nav navbar-right">
             {{#navLink "/images"}}Images{{/navLink}}
             {{#navLink "/employees"}}Employees{{/navLink}}
-             {{#navLink "/departments"}}Departments{{/navLink}}
+            {{#navLink "/departments"}}Departments{{/navLink}}
           </ul>
+          {{/if}}
+          {{#unless session.user }}
+          <form class="navbar-form navbar-right">
+            <a href="/register" class="btn btn-success"><span
+                class="glyphicon glyphiconcog"></span>&nbsp;&nbsp;Register</a>
+            <a href="/login" class="btn btn-primary"><span
+                class="glyphicon glyphicon-chevronright"></span>&nbsp;&nbsp;Log In</a>
+          </form>
+          {{/unless}}
+   
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
@@ -43,6 +66,12 @@
        {{{body}}}
           </div>
 
-  
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
   </body>
 </html>

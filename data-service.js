@@ -6,7 +6,7 @@
 *
 * Name: Tanvir Singh  Student ID: 104642210  Date: 2022-11-12
 *
-* Online (Heroku) url:https://damp-beach-98200.herokuapp.com/
+* Online (cyclic) url:https://easy-teal-chipmunk-tutu.cyclic.app/
 * _______________________________________________________
 *
 ********************************************************************************/
@@ -120,9 +120,12 @@ module.exports.getDepartments = function () {
 module.exports.getManagers = function () {
 
     return new Promise(function (resolve, reject) {
-       reject();
-    }
-    )
+        Employee.findAll({where:{isManager:true} }).then(function(data){
+            resolve(data);
+        }).catch(function(){
+            reject("no results returned");
+        })
+    })
 }
 
 module.exports.addEmployee = function (employeeData) {
