@@ -339,6 +339,9 @@ app.post("/register",(req,res)=>{
 
      });
 })
+app.use(function (req, res) {
+    res.status(404).send("Page not Found")
+})
 data.initialize().then(function () {
     dataServiceAuth.initialize().then(function(){
 
