@@ -18,7 +18,7 @@ var companySchema = new Schema({
 })
 module.exports.initialize = function(){
     return new Promise(function (resolve, reject) {
-    let db1 = mongoose.createConnection("mongodb+srv://Tanvir:Tanvir1234@cluster0.umgz2ic.mongodb.net/?retryWrites=true&w=majority",{ useNewUrlParser: true, useUnifiedTopology: true }, function(error){
+    let db1 = mongoose.createConnection("mongodb+srv://Tanvir:Tanvir1234@cluster1.6yf8sqh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1",{ useNewUrlParser: true, useUnifiedTopology: true }, function(error){
         if(error)
         {
         reject("db1 error! " + error);

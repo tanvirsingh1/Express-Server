@@ -76,7 +76,7 @@ const dstorage = multer.diskStorage({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const upload = multer({ storage: dstorage });
-var HTTP = process.env.PORT || 8080;  // || : or
+var HTTP = process.env.PORT || 8082;  // || : or
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(function (req, res, next) {
